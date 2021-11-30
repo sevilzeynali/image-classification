@@ -1,1 +1,1 @@
-# image-classification
+# Image classification by transfer learning
