@@ -1,0 +1,17 @@
+pandas
+glob
+os
+re
+matplotlib.pyplot
+tqdm
+tensorflow
+tensorflow.keras.applications
+tensorflow.keras.layers
+tensorflow.keras.models
+tensorflow.keras
+sklearn
+sklearn.metrics
+sklearn.model_selection
+mlflow
+mlflow.keras
+mlflow.tensorflow
