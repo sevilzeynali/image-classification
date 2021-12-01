@@ -18,7 +18,6 @@ jobs:
       - name: Train model
         run: |
           # Your ML workflow goes here
-          unzip dataset.zip
-          
+          unzip dataset.zip          
           pip install -r requirements.txt
           python paintings_classification.py >> results.txt
