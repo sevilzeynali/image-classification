@@ -79,8 +79,8 @@ early_stopping = callbacks.EarlyStopping(monitor = "val_loss",
                                          verbose = 2,
                                          restore_best_weights= True)
 
-mlflow.set_tracking_uri("http://localhost:5000")
-mlflow.set_experiment("images classification")
+# mlflow.set_tracking_uri("http://localhost:5000")
+# mlflow.set_experiment("images classification")
 epochs=10
 #with mlflow.start_run() as run:    
 history = model.fit(dataset_train, 
