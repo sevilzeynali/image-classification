@@ -24,18 +24,19 @@ my_dico={}
 my_dico["filepath"]=les_fichiers
 liste_name=[]
 
+f = open("reports.txt", "a")
+
 for fichier in les_fichiers:   
     name=re.search(r"[a-zA-Z*_?a-zA-Z*]*", os.path.basename(fichier))
     liste_name.append(name.group(0))
     my_dico["label"]=liste_name
     
 df=pd.DataFrame.from_dict(my_dico)
-df.head()
 
 df["label"].value_counts()
 
 df["label"]=df["label"].replace({"Alfred_Sisley_": 0, "Frida_Kahlo_": 1,"Andrei_Rublev_":2,"Gustave_Courbet_":3 })
-df.head()
+
 
 X_train_path,X_test_path,y_train,y_test=train_test_split(df["filepath"],df["label"],test_size=0.2,random_state=1234)
 X_test=[]
@@ -68,6 +69,7 @@ model.add(Dense(512,activation="relu"))
 model.add(Dropout(0.2))
 model.add(Dense(4,activation="softmax"))
 model.summary()
+model.summary(print_fn=lambda x: f.write(x + '\n'))
 
 model.compile(loss="sparse_categorical_crossentropy",optimizer="adam",metrics=["accuracy"])
 
@@ -100,18 +102,20 @@ history = model.fit(dataset_train,
     
 y_prob=model.predict(X_test,batch_size=64)
 y_pred=tf.argmax(y_prob,axis=-1).numpy()
-print(accuracy_score(y_test,y_pred))
-print(confusion_matrix(y_test,y_pred))
+f.write(accuracy_score(y_test,y_pred))
+f.write(confusion_matrix(y_test,y_pred))
+# print(accuracy_score(y_test,y_pred))
+# print(confusion_matrix(y_test,y_pred))
 
 cross_table = pd.crosstab(y_test, y_pred, rownames=['rééles'], colnames=['Prédites'], margins=True)
-cross_table
+f.write(cross_table)
 
 cm = confusion_matrix(y_test, y_pred, labels=[0,1,2,3])
 disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=[0,1,2,3])
-disp.plot()
-plt.show()
+plt.savefig('confusion_matrix.png')
 
-print(metrics.classification_report(y_test, y_pred))
+
+f.write(metrics.classification_report(y_test, y_pred))
 
 plt.figure(figsize=(12,4))
 
@@ -130,4 +134,4 @@ plt.title('Model accuracy by epoch')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='right')
-plt.show()
+plt.savefig('accuracy_loss.png')
