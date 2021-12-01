@@ -82,20 +82,20 @@ early_stopping = callbacks.EarlyStopping(monitor = "val_loss",
 mlflow.set_tracking_uri("http://localhost:5000")
 mlflow.set_experiment("images classification")
 epochs=10
-with mlflow.start_run() as run:    
-    history = model.fit(dataset_train, 
+#with mlflow.start_run() as run:    
+history = model.fit(dataset_train, 
                               epochs = 10,
                               validation_data = (X_test,y_test),
                               callbacks=[lr_plateau, early_stopping, checkpoint])
-    mlflow.tensorflow.autolog(every_n_iter=1)
-    mlflow.log_param("epochs",epochs)
-    model_name = "artists paintings classification"
-    artifact_path="artifacts"
-    mlflow.keras.log_model(keras_model=model, artifact_path=artifact_path)
-    mlflow.keras.save_model(keras_model=model, path=model_name)
-    mlflow.log_artifact(local_path=model_name)
-    runID=run.info.run_uuid
-    mlflow.register_model("runs:/"+runID+"/"+artifact_path,"paintings")
+#     mlflow.tensorflow.autolog(every_n_iter=1)
+#     mlflow.log_param("epochs",epochs)
+#     model_name = "artists paintings classification"
+#     artifact_path="artifacts"
+#     mlflow.keras.log_model(keras_model=model, artifact_path=artifact_path)
+#     mlflow.keras.save_model(keras_model=model, path=model_name)
+#     mlflow.log_artifact(local_path=model_name)
+#     runID=run.info.run_uuid
+#     mlflow.register_model("runs:/"+runID+"/"+artifact_path,"paintings")
     
     
 y_prob=model.predict(X_test,batch_size=64)
