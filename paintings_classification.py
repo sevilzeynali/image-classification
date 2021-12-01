@@ -102,13 +102,13 @@ history = model.fit(dataset_train,
     
 y_prob=model.predict(X_test,batch_size=64)
 y_pred=tf.argmax(y_prob,axis=-1).numpy()
-f.write(accuracy_score(y_test,y_pred))
-f.write(confusion_matrix(y_test,y_pred))
-# print(accuracy_score(y_test,y_pred))
-# print(confusion_matrix(y_test,y_pred))
+f.write(str(accuracy_score(y_test,y_pred)))
+f.write(str(confusion_matrix(y_test,y_pred)))
+# print(str(accuracy_score(y_test,y_pred)))
+# print(str(confusion_matrix(y_test,y_pred)))
 
 cross_table = pd.crosstab(y_test, y_pred, rownames=['rééles'], colnames=['Prédites'], margins=True)
-f.write(cross_table)
+f.write(str(cross_table))
 
 cm = confusion_matrix(y_test, y_pred, labels=[0,1,2,3])
 disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=[0,1,2,3])
