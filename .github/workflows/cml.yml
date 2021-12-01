@@ -19,6 +19,6 @@ jobs:
         run: |
           # Your ML workflow goes here
           unzip dataset.zip
-          cat results.txt >> report.md
+          
           pip install -r requirements.txt
-          python paintings_classification.py
+          python paintings_classification.py >> results.txt
