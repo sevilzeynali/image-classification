@@ -20,6 +20,3 @@ jobs:
           # Your ML workflow goes here
           cat results.txt >> report.md
           paintings_classification.py
-      - name: Write CML report
-        env:
-          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
