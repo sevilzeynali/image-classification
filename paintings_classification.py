@@ -33,7 +33,7 @@ for fichier in les_fichiers:
     
 df=pd.DataFrame.from_dict(my_dico)
 
-df["label"].value_counts()
+#df["label"].value_counts()
 
 df["label"]=df["label"].replace({"Alfred_Sisley_": 0, "Frida_Kahlo_": 1,"Andrei_Rublev_":2,"Gustave_Courbet_":3 })
 
@@ -53,6 +53,7 @@ def load_image(filepath):
     im=tf.image.decode_jpeg(im,channels=3)
     im=tf.image.resize(im,size=(256,256))
     return im
+
 dataset_train=tf.data.Dataset.from_tensor_slices((X_train_path,y_train))
 dataset_train=dataset_train.map(lambda x,y:[load_image(x),y],num_parallel_calls=-1).batch(32)
 
@@ -63,9 +64,9 @@ for layer in efficientNet.layers:
 model=Sequential()
 model.add(efficientNet)
 model.add(GlobalAveragePooling2D())
-model.add(Dense(1024, activation="relu"))
+model.add(Dense(512, activation="relu"))
 model.add(Dropout(0.2))
-model.add(Dense(512,activation="relu"))
+model.add(Dense(64,activation="relu"))
 model.add(Dropout(0.2))
 model.add(Dense(4,activation="softmax"))
 model.summary()
