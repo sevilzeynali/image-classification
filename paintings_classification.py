@@ -15,16 +15,13 @@ from sklearn.metrics import accuracy_score,confusion_matrix, ConfusionMatrixDisp
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
 
-import mlflow
-import mlflow.keras
-import mlflow.tensorflow
 
 les_fichiers=glob.glob("dataset/*")
 my_dico={}
 my_dico["filepath"]=les_fichiers
 liste_name=[]
 
-f = open("reports.txt", "a")
+results = open("reports.txt", "a")
 
 for fichier in les_fichiers:   
     name=re.search(r"[a-zA-Z*_?a-zA-Z*]*", os.path.basename(fichier))
@@ -33,10 +30,7 @@ for fichier in les_fichiers:
     
 df=pd.DataFrame.from_dict(my_dico)
 
-#df["label"].value_counts()
-
 df["label"]=df["label"].replace({"Alfred_Sisley_": 0, "Frida_Kahlo_": 1,"Andrei_Rublev_":2,"Gustave_Courbet_":3 })
-
 
 X_train_path,X_test_path,y_train,y_test=train_test_split(df["filepath"],df["label"],test_size=0.2,random_state=1234)
 X_test=[]
@@ -70,53 +64,45 @@ model.add(Dense(64,activation="relu"))
 model.add(Dropout(0.2))
 model.add(Dense(4,activation="softmax"))
 model.summary()
-model.summary(print_fn=lambda x: f.write(x + '\n'))
+model.summary(print_fn=lambda x: results.write(x + '\n'))
+
 
 model.compile(loss="sparse_categorical_crossentropy",optimizer="adam",metrics=["accuracy"])
 
 checkpoint=callbacks.ModelCheckpoint(filepath="checkpoint",monitor="val_loss",save_best_only=True,save_weights_only=False,mode="min",save_freq='epoch')
 lr_plateau=callbacks.ReduceLROnPlateau(monitor="val_loss",patience=5,factor=0.1,verbose=2,mode="min")
 early_stopping = callbacks.EarlyStopping(monitor = "val_loss",
-                                         patience = 5,
+                                         patience = 2,
                                          mode = 'min',
                                          verbose = 2,
                                          restore_best_weights= True)
 
-# mlflow.set_tracking_uri("http://localhost:5000")
-# mlflow.set_experiment("images classification")
-epochs=10
-#with mlflow.start_run() as run:    
+   
 history = model.fit(dataset_train, 
                               epochs = 10,
                               validation_data = (X_test,y_test),
                               callbacks=[lr_plateau, early_stopping, checkpoint])
-#     mlflow.tensorflow.autolog(every_n_iter=1)
-#     mlflow.log_param("epochs",epochs)
-#     model_name = "artists paintings classification"
-#     artifact_path="artifacts"
-#     mlflow.keras.log_model(keras_model=model, artifact_path=artifact_path)
-#     mlflow.keras.save_model(keras_model=model, path=model_name)
-#     mlflow.log_artifact(local_path=model_name)
-#     runID=run.info.run_uuid
-#     mlflow.register_model("runs:/"+runID+"/"+artifact_path,"paintings")
     
     
 y_prob=model.predict(X_test,batch_size=64)
 y_pred=tf.argmax(y_prob,axis=-1).numpy()
-f.write(str(accuracy_score(y_test,y_pred)))
-f.write(str(confusion_matrix(y_test,y_pred)))
-# print(str(accuracy_score(y_test,y_pred)))
-# print(str(confusion_matrix(y_test,y_pred)))
+results.write(str(accuracy_score(y_test,y_pred)))
+results.write(str(confusion_matrix(y_test,y_pred)))
+print(str(accuracy_score(y_test,y_pred)))
+print(str(confusion_matrix(y_test,y_pred)))
 
 cross_table = pd.crosstab(y_test, y_pred, rownames=['rééles'], colnames=['Prédites'], margins=True)
-f.write(str(cross_table))
+results.write(str(cross_table))
+print(str(cross_table))
 
 cm = confusion_matrix(y_test, y_pred, labels=[0,1,2,3])
 disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=[0,1,2,3])
+disp.plot()
 plt.savefig('confusion_matrix.png')
 
 
-f.write(metrics.classification_report(y_test, y_pred))
+results.write(metrics.classification_report(y_test, y_pred))
+results.close()
 
 plt.figure(figsize=(12,4))
 
