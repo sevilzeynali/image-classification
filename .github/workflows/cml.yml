@@ -21,8 +21,9 @@ jobs:
           unzip dataset.zip          
           pip install -r requirements.txt
           python paintings_classification.py 
-          cat reports.txt >> results.txt
-          echo >> results.txt
-          cml-publish confusion_matrix.png --md --title 'confusion-matrix' >> results.txt
-          cml-send-comment results.txt
+          cat reports.txt >> results.md
+          echo >> results.md
+          cml-publish confusion_matrix.png --md --title 'confusion-matrix' >> results.md
+          cml-publish accuracy_loss.png --md --title 'accuracy_loss' >> results.md
+          cml-send-comment results.md
 
