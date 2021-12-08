@@ -15,17 +15,34 @@ jobs:
       #   with:
       #     python-version: '3.x'
       - uses: iterative/setup-cml@v1
+      
+      - name: Unzip data set
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          unzip dataset.zip 
+      
+      - name: install requirements
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install -r requirements.txt
+        
+        
       - name: Train model
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Your ML workflow goes here
-          unzip dataset.zip          
-          pip install -r requirements.txt
-          python paintings_classification.py 
-          cat reports.txt >> results.md
-          echo >> results.md
-          cml-publish confusion_matrix.png --md --title 'confusion-matrix' >> results.md
-          cml-publish accuracy_loss.png --md --title 'accuracy_loss' >> results.md
-          cml-send-comment results.md
+            python paintings_classification.py 
+          
+          
+      - name: Reports
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            cat reports.txt >> results.md
+            echo >> results.md
+            cml-publish confusion_matrix.png --md --title 'confusion-matrix' >> results.md
+            cml-publish accuracy_loss.png --md --title 'accuracy_loss' >> results.md
+            cml-send-comment results.md
 
