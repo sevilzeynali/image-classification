@@ -17,14 +17,14 @@ jobs:
       - uses: iterative/setup-cml@v1
       
       - name: Unzip data set
-        #env:
-          #REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           unzip dataset.zip 
       
       - name: install requirements
-        #env:
-          #REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install -r requirements.txt
         
