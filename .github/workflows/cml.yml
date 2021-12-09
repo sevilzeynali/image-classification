@@ -3,31 +3,22 @@ on: [push]
 jobs:
   run:
     runs-on: ubuntu-latest
-    # optionally use a convenient Ubuntu LTS + DVC + CML image
-    # container: docker://ghcr.io/iterative/cml:0-dvc2-base1
     steps:
       - uses: actions/checkout@v2
       - uses: iterative/setup-cml@v1
       
       - name: Unzip data set
-        #env:
-          #REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           unzip dataset.zip 
       
       - name: install requirements
-        #env:
-          #REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install -r requirements.txt
         
         
       - name: Train model
-        #env:
-          #REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            python paintings_classification.py 
-          
+            python paintings_classification.py           
           
       - name: Reports
         env:
